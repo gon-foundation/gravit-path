@@ -10,4 +10,4 @@ Billing address: " . $f('addr', 1000) . "
 Notes: " . $f('note', 2000);
 $_POST['topic'] = 'sales';
 require dirname(__DIR__, 3) . '/contact-forms/lib.php';
-cf_handle('gravitpath.world');
+cf_handle('gravitpath.order');
