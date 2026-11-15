@@ -67,6 +67,13 @@ width:100%;max-width:1136px;font-size:17px;line-height:1.6;color:var(--text)}
 .gv .plan ul{margin:14px 0 0;padding-left:18px;color:var(--muted);font-size:15px}
 .gv .plan li{margin:5px 0}
 .gv .plan .tag{position:absolute;top:18px;right:18px}
+.gv .plan{display:flex;flex-direction:column}.gv .plan ul{flex:1}.gv .plan .btn{align-self:flex-start}
+.gv .ptiles{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px}
+@media(max-width:860px){.gv .ptiles{grid-template-columns:1fr}}
+.gv .ptile{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;color:var(--text);text-decoration:none;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+.gv .ptile:hover,.gv .ptile:focus-visible{transform:translateY(-6px);border-color:var(--glow);box-shadow:0 12px 30px rgba(0,120,255,.18)}
+.gv .ptile h3{margin:6px 0 8px}.gv .ptile p{color:var(--muted);font-size:15px;margin:0 0 14px;flex:1}
+.gv .ptile .pgo{color:var(--glow);font-size:14px;font-weight:650}
 .gv .notice{border-left:4px solid var(--warn);background:rgba(252,211,77,.07);padding:14px 18px;border-radius:10px;margin:18px 0 0}
 .gv .correction{border-left:4px solid var(--glow);background:var(--glow-soft);padding:14px 18px;border-radius:10px;margin:14px 0}
 .gv .wl{display:grid;grid-template-columns:1.4fr 1fr;gap:14px;max-width:760px;margin-top:8px}
