@@ -24,6 +24,7 @@ PARTNERS = [("Rapid Formations", "https://www.rapidformations.co.uk", "UK"),
             ("1stchoice Formations", "https://www.1stchoice-formations.co.uk", "UK"),
             ("Greater Zurich Area", "https://www.greaterzuricharea.com", "CH")]
 E = html.escape
+from plans_order import P as PO
 
 # Plan cards in the style of gravitverifier, and partner tiles (15.11.2026).
 # Partner lines are short summaries of what each partner says about itself on its own site.
@@ -159,11 +160,12 @@ def index(p, T, lang):
     ul = lambda xs: "".join(f"<li>{E(x)}</li>" for x in xs)  # noqa: E731
     pp, pr = T["plan_people"], T["plan_pro"]
     X = EXTRA.get(lang, EXTRA["en"])
+    Q = PO[lang]
     mail = '<a href="/contact/">gravitpath.world/contact</a>'
     canon = f'<a href="{GH}/blob/main/CANON.md">CANON.md</a>'
     tcls = {"ok": "t-ok", "warn": "t-warn", "bad": "t-bad", "plan": "t-plan"}
     status = "".join(f'<tr><td>{E(a)}</td><td><span class="tag {tcls[c]}">{E(t)}</span> '
-                     f'{E(f(d)).replace("{canon}", canon) if d != "{canon}" else canon}</td></tr>' for a, c, t, d in T["status"])
+                     f'{E(f(d)).replace("{canon}", canon) if d != "{canon}" else canon}</td></tr>' for a, c, t, d in [(r[0], "ok", PO[lang]["avail"], PO[lang]["avail_txt"]) if r[1] == "plan" else r for r in T["status"]])
     return f'''
 <div class="hero">
   <div>
@@ -183,14 +185,17 @@ def index(p, T, lang):
 <section id="trust"><h2>{E(T["trust_h"])}</h2><p class="muted">{E(T["trust_lead"])}</p><div class="grid">{trust}</div></section>
 <section id="security"><h2>{E(T["sec_h"])}</h2><p>{E(T["sec_p"])} <a href="https://gravitverifier.space/#standards">{E(T["sec_link"])}</a></p></section>
 <section id="plans"><h2>{E(T["plans_h"])}</h2>
-  <div class="plans" style="grid-template-columns:repeat(2,1fr)">
-    <div class="plan"><h3>{E(pp[1])}</h3><div class="price">{E(X["price_free"])}</div>
+  <div class="plans">
+    <div class="plan"><h3>Free</h3><div class="price">CHF 0</div>
       <p class="muted" style="margin:4px 0 0;font-size:14px">{E(pp[0])}</p><span class="tag t-plan">{E(T["preview"])}</span>
-      <ul>{ul(pp[2])}</ul><a class="btn btn1" href="#how" style="margin-top:14px">{E(X["btn_free"])}</a></div>
-    <div class="plan" style="border-color:var(--glow)"><h3>{E(pr[1])}</h3><div class="price">{E(X["price_corp"])}</div>
-      <p class="muted" style="margin:4px 0 0;font-size:14px">{E(pr[0])}</p><span class="tag t-plan">{E(X["planned"])}</span>
-      <ul>{ul(pr[2])}</ul><a class="btn btn2" href="/contact/" style="margin-top:14px">{E(X["btn_corp"])}</a></div>
-  </div></section>
+      <ul>{ul(pp[2] + [Q["free_plus"]])}</ul><a class="btn btn2" href="#how" style="margin-top:14px">{E(Q["btn_free"])}</a></div>
+    <div class="plan" style="border-color:var(--glow)"><h3>Business</h3><div class="price">CHF 7 <small>{E(Q["per30"])}</small></div>
+      <p class="muted" style="margin:4px 0 0;font-size:14px">{E(Q["for_companies"])}</p><span class="tag t-ok">{E(Q["new"])}</span>
+      <ul>{ul(Q["biz"])}</ul><a class="btn btn1" href="order/?plan=business" style="margin-top:14px">{E(Q["btn_biz"])}</a></div>
+    <div class="plan"><h3>Enterprise</h3><div class="price">CHF 150 <small>{E(Q["per30"])}</small></div>
+      <span class="tag t-ok">{E(Q["new"])}</span>
+      <ul>{ul(pr[2][1:] + [Q["ent_plus"]])}</ul><a class="btn btn1" href="order/?plan=enterprise" style="margin-top:14px">{E(Q["btn_ent"])}</a></div>
+  </div><p class="muted" style="margin-top:14px;font-size:14px">{E(Q["o_vat"])}</p></section>
 <section id="partners"><h2>{E(T["partners_h"])}</h2><p class="muted">{E(T["partners_text"]).replace("{mail}", mail)}</p>
   <div class="ptiles">{"".join(f'<a class="ptile" href="{u}" rel="noopener" target="_blank"><span class="rule">{c}</span><h3>{E(n)}</h3><p>{E(d)}</p><span class="pgo">{E(X["visit"])} →</span></a>' for (n, u, c), d in zip(PARTNERS, X["p"]))}</div></section>
 <section id="status"><h2>{E(T["status_h"])}</h2>
@@ -230,6 +235,48 @@ def rules_page(p, T):
 '''
 
 
+def order_page(lang):
+    Q = PO[lang]
+    opts = "".join(f'<option value="{v}">{E(t)}</option>' for v, t in
+                   [("business", "Business, CHF 7 " + Q["per30"]), ("enterprise", "Enterprise, CHF 150 " + Q["per30"])])
+    pays = "".join(f'<label class="pay"><input type="radio" name="pay" value="{v}"{" checked" if v == "USDC" else ""}> {E(t)}</label>'
+                   for v, t in [("USDC", "USDC"), ("USDT", "USDT"), ("Bitcoin", "Bitcoin")])
+    return f'''<section style="max-width:720px"><h1>{E(Q["o_title"])}</h1><p class="muted">{E(Q["o_lead"])}</p>
+<div class="notice" id="ok" hidden>{E(Q["o_thanks"])}</div><div class="notice" id="err" hidden>{E(Q["o_err"])}</div><div class="notice" id="rate" hidden>{E(Q["o_rate"])}</div>
+<form class="order" method="post" action="send.php">
+<input type="hidden" name="t0" value="0"><input type="text" name="website2" value="" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+<input type="hidden" name="lang" value="{lang}">
+<label>{E(Q["o_plan"])}<select name="plan" id="plan">{opts}</select></label>
+<label>{E(Q["o_name"])}<input name="name" required maxlength="120"></label>
+<label>{E(Q["o_email"])}<input name="email" type="email" required maxlength="200"></label>
+<label>{E(Q["o_org"])}<input name="org" maxlength="200"></label>
+<label>{E(Q["o_addr"])}<textarea name="addr" rows="3" maxlength="1000"></textarea></label>
+<fieldset><legend>{E(Q["o_pay"])}</legend>{pays}<label class="pay" style="opacity:.55"><input type="radio" disabled> {E(Q["o_paypal"])}</label></fieldset>
+<label>{E(Q["o_note"])}<textarea name="note" rows="3" maxlength="2000"></textarea></label>
+<label class="pay"><input type="checkbox" name="consent" value="1" required> {E(Q["o_consent"])}</label>
+<button class="btn btn1" type="submit">{E(Q["o_send"])}</button>
+<p class="muted" style="font-size:14px;margin-top:14px">{E(Q["o_vat"])}</p>
+</form>
+<style>.gv form.order label{{display:block;margin:12px 0}}.gv form.order input:not([type=radio]):not([type=checkbox]),.gv form.order select,.gv form.order textarea{{display:block;width:100%;margin-top:6px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit}}
+.gv form.order fieldset{{border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:12px 0}}.gv form.order .pay{{display:block;margin:6px 0}}.gv form.order button{{border:0;cursor:pointer;margin-top:8px}}</style>
+<script>(function(){{var f=document.querySelector("form.order");f.t0.value=Date.now();var q=new URLSearchParams(location.search);
+var p=q.get("plan");if(p)document.getElementById("plan").value=p;
+if(q.get("sent")){{document.getElementById("ok").hidden=false;f.hidden=true}}
+if(q.get("error")==="rate"){{document.getElementById("rate").hidden=false}}else if(q.get("error")){{document.getElementById("err").hidden=false}}}})();</script>
+</section>'''
+
+
+SEND = """<?php
+// Order form of Gravit Path: the fields are written into the message and handled like a contact message.
+$f = fn($k, $n) => mb_substr(trim((string)($_POST[$k] ?? '')), 0, $n);
+$_POST['message'] = "ORDER\nPlan: " . $f('plan', 20) . "\nPayment: " . $f('pay', 20) . "\nLanguage: " . $f('lang', 5)
+    . "\nBilling address: " . $f('addr', 1000) . "\nNotes: " . $f('note', 2000);
+$_POST['topic'] = 'sales';
+require dirname(__DIR__, %d) . '/contact-forms/lib.php';
+cf_handle('gravitpath.world');
+"""
+
+
 if __name__ == "__main__":
     p = packs()
     keys = set(texts("en"))
@@ -245,4 +292,7 @@ if __name__ == "__main__":
         (out / "index.html").write_text(page(lang, "", T["title"], T["desc"], nav, index(p, T, lang)))
         nav2 = [(t, ("../" + h) if h.startswith("#") else "./") for t, h in nav]
         (out / "rules" / "index.html").write_text(page(lang, "rules/", T["rp_title"], T["rp_desc"], nav2, rules_page(p, T)))
+        (out / "order").mkdir(parents=True, exist_ok=True)
+        (out / "order" / "index.html").write_text(page(lang, "order/", PO[lang]["o_title"] + " · Gravit Path", PO[lang]["o_lead"], nav2, order_page(lang)))
+        (out / "order" / "send.php").write_text(SEND % (2 if lang == "en" else 3))
     print("built", ", ".join(LANGS))
