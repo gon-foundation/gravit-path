@@ -25,6 +25,7 @@ PARTNERS = [("Rapid Formations", "https://www.rapidformations.co.uk", "UK"),
             ("Greater Zurich Area", "https://www.greaterzuricharea.com", "CH")]
 E = html.escape
 from plans_order import P as PO
+from situations import S as SIT
 
 # Plan cards in the style of gravitverifier, and partner tiles (15.11.2026).
 # Partner lines are short summaries of what each partner says about itself on its own site.
@@ -161,6 +162,7 @@ def index(p, T, lang):
     pp, pr = T["plan_people"], T["plan_pro"]
     X = EXTRA.get(lang, EXTRA["en"])
     Q = PO[lang]
+    Z = SIT[lang]
     mail = '<a href="/contact/">gravitpath.world/contact</a>'
     canon = f'<a href="{GH}/blob/main/CANON.md">CANON.md</a>'
     tcls = {"ok": "t-ok", "warn": "t-warn", "bad": "t-bad", "plan": "t-plan"}
@@ -169,21 +171,20 @@ def index(p, T, lang):
     return f'''
 <div class="hero">
   <div>
-    <p class="kicker">{E(T["kicker"])}</p>
-    <h1>{E(T["h1"])}<em>{E(T["h1_em"])}</em></h1>
-    <p class="lead">{E(T["lead"])}</p>
-    <div class="btns"><a class="btn btn1" href="#paths">{E(T["btn_paths"])}</a><a class="btn btn2" href="rules/">{E(T["btn_rules"])}</a></div>
+    <p class="kicker">{E(Z["kicker"])}</p>
+    <h1>{E(Z["h1"])}</h1>
+    <p class="lead">{E(Z["lead"])}</p>
+    <div class="btns"><a class="btn btn1" href="/contact/">{E(Z["btn_tell"])}</a><a class="btn btn2" href="#how">{E(Z["btn_steps"])}</a></div>
   </div>
   <div class="states">{labels}<p>{E(T["labels_note"])}</p></div>
 </div>
+<section id="situations"><h2>{E(Z["sit_h"])}</h2><p class="muted">{E(Z["sit_lead"])}</p>
+  <div class="ptiles sit">{"".join(f'<a class="ptile" href="/contact/"><h3>{E(a)}</h3><p>{E(b)}</p><span class="pgo">{E(Z["tile_btn"])} →</span></a>' for a, b in Z["sits"])}</div></section>
 <section id="how"><h2>{E(T["how_h"])}</h2><div class="grid">{steps}</div></section>
 <section id="paths"><h2>{E(T["paths_h"])}</h2><p class="muted">{E(T["paths_lead"])}</p><div class="grid">{paths}</div></section>
 <section id="countries"><h2>{E(T["countries_h"])}</h2><p class="muted">{E(T["countries_lead"])}</p><div class="grid">{countries}</div></section>
 <section id="rules"><h2>{E(T["rules_h"])}</h2><p class="muted">{E(f(T["rules_lead"]))}</p><div class="grid">{rules}</div>
   <p style="margin-top:16px"><a class="btn btn2" href="rules/">{E(f(T["all_rules"]))}</a></p></section>
-<section id="principles"><h2>{E(T["principles_h"])}</h2><div class="grid">{princ}</div></section>
-<section id="trust"><h2>{E(T["trust_h"])}</h2><p class="muted">{E(T["trust_lead"])}</p><div class="grid">{trust}</div></section>
-<section id="security"><h2>{E(T["sec_h"])}</h2><p>{E(T["sec_p"])} <a href="https://gravitverifier.space/#standards">{E(T["sec_link"])}</a></p></section>
 <section id="plans"><h2>{E(T["plans_h"])}</h2>
   <div class="plans">
     <div class="plan"><h3>Free</h3><div class="price">CHF 0</div>
@@ -201,6 +202,11 @@ def index(p, T, lang):
 <section id="status"><h2>{E(T["status_h"])}</h2>
   <div class="tablewrap"><table><tr><th>{E(T["status_item"])}</th><th>{E(T["status_today"])}</th></tr>{status}</table></div>
   <div class="notice">{E(T["notice"])}</div></section>
+<section id="reviewers"><h2>{E(Z["rev_h"])}</h2><p class="muted">{E(Z["rev_lead"])}</p></section>
+<section id="principles"><h3 style="font-size:22px;margin-top:28px">{E(T["principles_h"])}</h3><div class="grid">{princ}</div></section>
+<section id="trust"><h3 style="font-size:22px;margin-top:28px">{E(T["trust_h"])}</h3><p class="muted">{E(T["trust_lead"])}</p><div class="grid">{trust}</div></section>
+<section id="security"><h3 style="font-size:22px;margin-top:28px">{E(T["sec_h"])}</h3><p>{E(T["sec_p"])} <a href="https://gravitverifier.space/#standards">{E(T["sec_link"])}</a></p></section>
+
 '''
 
 
