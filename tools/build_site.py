@@ -185,6 +185,7 @@ def index(p, T, lang):
 <section id="trust"><h2>{E(T["trust_h"])}</h2><p class="muted">{E(T["trust_lead"])}</p><div class="grid">{trust}</div></section>
 <section id="security"><h2>{E(T["sec_h"])}</h2><p>{E(T["sec_p"])} <a href="https://gravitverifier.space/#standards">{E(T["sec_link"])}</a></p></section>
 <section id="plans"><h2>{E(T["plans_h"])}</h2>
+  <p class="muted">{E(Q["intro"])}</p>
   <div class="plans">
     <div class="plan"><h3>Free</h3><div class="price">CHF 0</div>
       <p class="muted" style="margin:4px 0 0;font-size:14px">{E(pp[0])}</p><span class="tag t-plan">{E(T["preview"])}</span>
@@ -195,7 +196,7 @@ def index(p, T, lang):
     <div class="plan"><h3>Enterprise</h3><div class="price">CHF 150 <small>{E(Q["per30"])}</small></div>
       <span class="tag t-ok">{E(Q["new"])}</span>
       <ul>{ul(pr[2][1:] + [Q["ent_plus"]])}</ul><a class="btn btn1" href="order/?plan=enterprise" style="margin-top:14px">{E(Q["btn_ent"])}</a></div>
-  </div><p class="muted" style="margin-top:14px;font-size:14px">{E(Q["o_vat"])}</p></section>
+  </div></section>
 <section id="partners"><h2>{E(T["partners_h"])}</h2><p class="muted">{E(T["partners_text"]).replace("{mail}", mail)}</p>
   <div class="ptiles">{"".join(f'<a class="ptile" href="{u}" rel="noopener" target="_blank"><span class="rule">{c}</span><h3>{E(n)}</h3><p>{E(d)}</p><span class="pgo">{E(X["visit"])} →</span></a>' for (n, u, c), d in zip(PARTNERS, X["p"]))}</div></section>
 <section id="status"><h2>{E(T["status_h"])}</h2>
@@ -273,7 +274,7 @@ $_POST['message'] = "ORDER\nPlan: " . $f('plan', 20) . "\nPayment: " . $f('pay',
     . "\nBilling address: " . $f('addr', 1000) . "\nNotes: " . $f('note', 2000);
 $_POST['topic'] = 'sales';
 require dirname(__DIR__, %d) . '/contact-forms/lib.php';
-cf_handle('gravitpath.world');
+cf_handle('gravitpath.order');
 """
 
 
