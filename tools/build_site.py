@@ -18,7 +18,7 @@ LANGS = ["en", "de", "fr", "it", "es", "pt", "tr", "uk", "ru", "zh", "ja"]
 HTML_LANG = {"zh": "zh-Hans"}
 SHORT = {"en": "English", "de": "Deutsch", "fr": "Français", "it": "Italiano", "es": "Español", "pt": "Português", "tr": "Türkçe", "uk": "Українська", "ru": "Русский", "zh": "中文", "ja": "日本語"}
 TAGCLS = {"verified": "t-ok", "secondary": "t-warn", "needs_review": "t-warn"}
-GH = "https://github.com/gravit-open-network-foundation/gravit-path"
+GH = "https://github.com/gon-foundation/gravit-path"
 # Partners who agreed to be named; names exactly as on their own sites.
 PARTNERS = [("Rapid Formations", "https://www.rapidformations.co.uk", "UK"),
             ("1stchoice Formations", "https://www.1stchoice-formations.co.uk", "UK"),
@@ -155,8 +155,8 @@ def index(p, T, lang):
     rules = "".join(f'<div class="card"><span class="rule">{E(r["id"])}</span><p>{E(r["statement"])} '
                     f'<a href="{E(r["source"])}">{E(T["official_source"])}</a></p></div>' for r in sample)
     princ = "".join(f'<div class="card"><h3>{E(a)}</h3><p>{E(b)}</p></div>' for a, b in T["principles"])
-    links = ["https://gravitverifier.space", "https://github.com/gravit-open-network-foundation/capability-gate",
-             "https://github.com/gravit-open-network-foundation/history-keeper"]
+    links = ["https://gravitverifier.space", "https://github.com/gon-foundation/capability-gate",
+             "https://github.com/gon-foundation/history-keeper"]
     trust = "".join(f'<div class="card"><h3>{E(a)}</h3><p>{E(b)} <a href="{u}">{E(c)}</a></p></div>' for (a, b, c), u in zip(T["trust"], links))
     ul = lambda xs: "".join(f"<li>{E(x)}</li>" for x in xs)  # noqa: E731
     pp, pr = T["plan_people"], T["plan_pro"]
