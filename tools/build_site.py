@@ -126,7 +126,7 @@ def page(lang, sub, title, desc, nav, body):
   <header>
     <a class="logo" href="{home or './'}" aria-label="Gravit Path">
     <img class="astra" src="{root}img/logo-gon-162.webp" srcset="{root}img/logo-gon-162.webp 1x, {root}img/logo-gon-324.webp 2x, {root}img/logo-gon-486.webp 3x" width="108" height="162" alt="" decoding="async" fetchpriority="high" />
-    <span class="logo-word">Gravit Path</span>
+    
     </a>
     <nav aria-label="Main"><ul>{items}</ul></nav>
   </header>
