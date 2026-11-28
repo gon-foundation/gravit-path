@@ -26,6 +26,7 @@ PARTNERS = [("Rapid Formations", "https://www.rapidformations.co.uk", "UK"),
 E = html.escape
 from plans_order import P as PO
 from situations import S as SIT
+from human import H as HUM
 
 # Plan cards in the style of gravitverifier, and partner tiles (15.11.2026).
 # Partner lines are short summaries of what each partner says about itself on its own site.
@@ -163,6 +164,7 @@ def index(p, T, lang):
     X = EXTRA.get(lang, EXTRA["en"])
     Q = PO[lang]
     Z = SIT[lang]
+    U = HUM.get(lang, HUM["en"])
     mail = '<a href="/contact/">gravitpath.world/contact</a>'
     canon = f'<a href="{GH}/blob/main/CANON.md">CANON.md</a>'
     tcls = {"ok": "t-ok", "warn": "t-warn", "bad": "t-bad", "plan": "t-plan"}
@@ -180,7 +182,12 @@ def index(p, T, lang):
 </div>
 <section id="situations"><h2>{E(Z["sit_h"])}</h2><p class="muted">{E(Z["sit_lead"])}</p>
   <div class="ptiles sit">{"".join(f'<a class="ptile" href="/contact/"><h3>{E(a)}</h3><p>{E(b)}</p><span class="pgo">{E(Z["tile_btn"])} →</span></a>' for a, b in Z["sits"])}</div></section>
+<section id="what"><h2>{E(U["what_h"])}</h2><p>{E(U["what_lead"])}</p>
+  <ul>{"".join(f"<li>{E(x)}</li>" for x in U["what_list"])}</ul><p>{E(U["what_tail"])}</p></section>
+<section id="examples"><h2>{E(U["ex_h"])}</h2><p class="muted">{E(U["ex_note"])}</p>
+  <div class="grid">{"".join(f'<div class="card"><h3>{E(t)}</h3><p>{E(x)}</p><p class="muted" style="font-size:14px">{E(U["rules_word"])}: <a href="rules/#{c}">{E(ids)}</a></p></div>' for t, x, c, ids in U["ex"])}</div></section>
 <section id="how"><h2>{E(T["how_h"])}</h2><div class="grid">{steps}</div></section>
+<section id="keep"><h2>{E(U["keep_h"])}</h2><ul>{"".join(f"<li>{E(x)}</li>" for x in U["keep"])}</ul></section>
 <section id="paths"><h2>{E(T["paths_h"])}</h2><p class="muted">{E(T["paths_lead"])}</p><div class="grid">{paths}</div></section>
 <section id="countries"><h2>{E(T["countries_h"])}</h2><p class="muted">{E(T["countries_lead"])}</p><div class="grid">{countries}</div></section>
 <section id="rules"><h2>{E(T["rules_h"])}</h2><p class="muted">{E(f(T["rules_lead"]))}</p><div class="grid">{rules}</div>
